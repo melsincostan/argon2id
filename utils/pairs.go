@@ -7,13 +7,16 @@ import (
 )
 
 var (
+	// ErrInvalidPair is returned when a key=value pair cannot be parsed (splitting the pair using SplitN with N=2 results in a number of elements that isn't 2).
 	ErrInvalidPair = errors.New("pair is not in key=value format or couldn't be parsed")
 )
 
+// Value is a constraint of the types supported by the kv / ToMap functions.
 type Value interface {
 	string | uint64
 }
 
+// ToMap takes a ',' separated list of 'key=value' pairs and parses them into a map.
 func ToMap[T Value](in string) (m map[string]T, e error) {
 	m = map[string]T{}
 
@@ -28,6 +31,7 @@ func ToMap[T Value](in string) (m map[string]T, e error) {
 	return
 }
 
+// kv takes a 'key=value' pair and returns the key and the parsed value.
 func kv[T Value](pair string) (k string, v T, e error) {
 	var p T
 	spl := strings.SplitN(pair, "=", 2)
