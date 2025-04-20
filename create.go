@@ -15,6 +15,9 @@ const (
 	keyLen     = uint32(32)
 )
 
+// New takes in a password (or another string to hash), hashes it and returns an HObject containing the result or an error.
+// It takes care of generating a salt using crypto/rand.Read().
+// The current length of the salt is 16 bytes.
 func New(passwd string) (o *HObject, e error) {
 	s, err := salt(saltLength)
 	if err != nil {
@@ -33,6 +36,9 @@ func New(passwd string) (o *HObject, e error) {
 	}, nil
 }
 
+// Parse is a convenience wrapper around *HObject.Deserialize().
+// It takes care of creating an object, calls deserialize, and returns it.
+// In case of an error, an error is returned instead.
 func Parse(input string) (o *HObject, e error) {
 	var ho HObject
 	if err := ho.Deserialize(input); err != nil {
@@ -42,6 +48,7 @@ func Parse(input string) (o *HObject, e error) {
 	return &ho, nil
 }
 
+// salt uses rand.Read() to generate a random salt of the asked for length.
 func salt(length uint) (s []byte, e error) {
 	s = make([]byte, length)
 	if _, err := rand.Read(s); err != nil {
