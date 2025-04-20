@@ -33,6 +33,15 @@ func New(passwd string) (o *HObject, e error) {
 	}, nil
 }
 
+func Parse(input string) (o *HObject, e error) {
+	var ho HObject
+	if err := ho.Deserialize(input); err != nil {
+		return nil, err
+	}
+
+	return &ho, nil
+}
+
 func salt(length uint) (s []byte, e error) {
 	s = make([]byte, length)
 	if _, err := rand.Read(s); err != nil {
